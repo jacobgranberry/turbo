@@ -31,6 +31,9 @@ type rawTurboJSON struct {
 	Pipeline Pipeline
 	// Configuration options when interfacing with the remote cache
 	RemoteCacheOptions RemoteCacheOptions `json:"remoteCache,omitempty"`
+
+	// Extends can be the name of another workspace
+	Extends string `json:"extends,omitempty"`
 }
 
 // TurboJSON is the root turborepo configuration
@@ -39,6 +42,8 @@ type TurboJSON struct {
 	GlobalEnv          []string
 	Pipeline           Pipeline
 	RemoteCacheOptions RemoteCacheOptions
+
+	Extends string
 }
 
 // RemoteCacheOptions is a struct for deserializing .remoteCache of configFile
@@ -153,9 +158,24 @@ func (to TaskOutputs) Sort() TaskOutputs {
 	return TaskOutputs{Inclusions: inclusions, Exclusions: exclusions}
 }
 
+// ReadTurboConfigOnly reads turbo.json from its path
+func ReadTurboConfiFromPath(turboJSONPath turbopath.AbsoluteSystemPath) (*TurboJSON, error) {
+	// If the configFile exists, use that
+	if turboJSONPath.FileExists() {
+		turboJSON, err := readTurboJSON(turboJSONPath)
+		if err != nil {
+			return nil, fmt.Errorf("%s: %w", configFile, err)
+		}
+
+		return turboJSON, nil
+	}
+
+	// If there's no turbo.json, return an error.
+	return nil, errors.Wrapf(os.ErrNotExist, "Could not find %s", configFile)
+}
+
 // ReadTurboConfig toggles between reading from package.json or the configFile to support early adopters.
 func ReadTurboConfig(rootPath turbopath.AbsoluteSystemPath, rootPackageJSON *PackageJSON) (*TurboJSON, error) {
-
 	turboJSONPath := rootPath.UntypedJoin(configFile)
 
 	// Check if turbo key in package.json exists
@@ -344,6 +364,7 @@ func (c *TurboJSON) UnmarshalJSON(data []byte) error {
 	// copy these over, we don't need any changes here.
 	c.Pipeline = raw.Pipeline
 	c.RemoteCacheOptions = raw.RemoteCacheOptions
+	c.Extends = raw.Extends
 
 	return nil
 }
