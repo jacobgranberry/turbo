@@ -33,7 +33,7 @@ type rawTurboJSON struct {
 	RemoteCacheOptions RemoteCacheOptions `json:"remoteCache,omitempty"`
 
 	// Extends can be the name of another workspace
-	Extends string `json:"extends,omitempty"`
+	Extends []string `json:"extends,omitempty"`
 }
 
 // TurboJSON is the root turborepo configuration
@@ -43,7 +43,8 @@ type TurboJSON struct {
 	Pipeline           Pipeline
 	RemoteCacheOptions RemoteCacheOptions
 
-	Extends string
+	// A list of Workspace names
+	Extends []string
 }
 
 // RemoteCacheOptions is a struct for deserializing .remoteCache of configFile

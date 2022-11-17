@@ -85,24 +85,26 @@ func (g *CompleteGraph) GetPackageTaskVisitor(ctx gocontext.Context, visitor fun
 				taskDefinitions = append(taskDefinitions, taskDefinition)
 
 				// If this turboJSON doesn't have an extends property, we can stop our for loop here.
-				if turboJSON.Extends == "" {
+				if len(turboJSON.Extends) == 0 {
 					break
 				}
 
 				// If there's an extends property, walk up to the next one
 				// Find the workspace it refers to, and and assign `directory` to it for the
 				// next iteration in this for loop.
-				workspace, ok := g.WorkspaceInfos[turboJSON.Extends]
-				if !ok {
-					// TODO: Should this be a hard error?
-					// A workspace was referenced that doesn't exist or we know nothing about
-					break
+				for _, workspaceName := range turboJSON.Extends {
+					workspace, ok := g.WorkspaceInfos[workspaceName]
+					if !ok {
+						// TODO: Should this be a hard error?
+						// A workspace was referenced that doesn't exist or we know nothing about
+						break
+					}
+
+					directory = turbopath.AbsoluteSystemPath(workspace.Dir)
+
+					// Reassign this. The loop will run again with this new turbo.json now.
+					turboJSONPath = directory.UntypedJoin("turbo.json")
 				}
-
-				directory = turbopath.AbsoluteSystemPath(workspace.Dir)
-
-				// Reassign this. The loop will run again with this new turbo.json now.
-				turboJSONPath = directory.UntypedJoin("turbo.json")
 			}
 		}
 
