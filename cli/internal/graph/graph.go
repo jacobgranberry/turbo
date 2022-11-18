@@ -133,6 +133,7 @@ func (g *CompleteGraph) GetPackageTaskVisitor(ctx gocontext.Context, visitor fun
 			// Need to iterate through all the NON_EMPTY fields in the struct
 			// and assign them to the mergedTaskDefinition
 			// If it's an array or object, we need to _append_.
+			fmt.Printf("[debug] taskDef %#v\n", taskDef)
 		}
 
 		packageTask := &nodes.PackageTask{
