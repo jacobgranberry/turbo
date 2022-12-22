@@ -42,6 +42,7 @@ pub struct NextConfig {
     pub react_strict_mode: Option<bool>,
     pub experimental: ExperimentalConfig,
     pub images: ImageConfig,
+    pub env: HashMap<String, String>,
     pub transpile_packages: Option<Vec<String>>,
 
     #[serde(flatten)]
@@ -134,7 +135,6 @@ struct UnsupportedNextConfig {
     compress: bool,
     dev_indicators: DevIndicatorsConfig,
     dist_dir: String,
-    env: HashMap<String, String>,
     eslint: EslintConfig,
     exclude_default_moment_locales: bool,
     // this can be a function in js land?
@@ -187,7 +187,6 @@ impl Default for UnsupportedNextConfig {
                 build_activity_position: BuildActivityPositions::BottomRight,
             },
             dist_dir: ".next".to_string(),
-            env: Default::default(),
             eslint: EslintConfig {
                 dirs: None,
                 ignore_during_builds: Some(false),
@@ -646,9 +645,10 @@ fn compare_to_default<T: Default + Serialize + PartialEq>(unsupported: &T) -> Re
 }
 
 const SUPPORTED_OPTIONS: &[&'static str] = &[
+    "configFileName",
+    "env",
     "images",
     "reactStrictMode",
-    "configFileName",
     "swcMinify",
     "experimental.appDir",
     "experimental.serverComponentsExternalPackages",

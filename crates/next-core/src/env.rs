@@ -67,6 +67,10 @@ pub async fn env_for_js(
         "__NEXT_IMAGE_OPTS".to_string() => serde_json::to_string(&image_config).unwrap(),
     };
 
+    for (var, val) in next_config.env.iter() {
+        map.insert(var.clone(), val.clone());
+    }
+
     if next_config.react_strict_mode.unwrap_or(false) {
         map.insert("__NEXT_STRICT_MODE".to_string(), "true".to_string());
     }
