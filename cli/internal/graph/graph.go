@@ -152,9 +152,8 @@ func getTaskFromPipeline(pipeline fs.Pipeline, taskID string, taskName string) (
 		fallbackTaskDefinition, notcool := pipeline[taskName]
 		// if neither, then bail
 		if !notcool {
-			// TODO: the compiler doesn't like this nil return here, can't
-			// remember how to do an empty return for a struct...
-			return nil, fmt.Errorf("No task defined in pipeline")
+			// Return an empty fs.TaskDefinition
+			return fs.TaskDefinition{}, fmt.Errorf("No task defined in pipeline")
 		}
 
 		// override if we need to...
