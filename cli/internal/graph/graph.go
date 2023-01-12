@@ -59,13 +59,8 @@ func (g *CompleteGraph) GetPackageTaskVisitor(ctx gocontext.Context, visitor fun
 		taskDefinitions := []fs.TaskDefinition{}
 
 		// Start in the workspace directory
-		// Find the closest turbo.json as we iterate up
-		// TODO: where does this Findup end?
 		directory := turbopath.AbsoluteSystemPath(pkg.Dir)
-		turboJSONPath, findTurboJSONErr := directory.Findup("turbo.json")
-		if findTurboJSONErr != nil {
-			return findTurboJSONErr
-		}
+		turboJSONPath := directory.UntypedJoin("turbo.json")
 
 		// For loop until we break manually.
 		// We will reassign `turboJSONPath` inside this loop, so that
