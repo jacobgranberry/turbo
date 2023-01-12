@@ -49,6 +49,7 @@ func (g *CompleteGraph) GetPackageTaskVisitor(ctx gocontext.Context, visitor fun
 		// We'll store this separately for now, because we'll get the rest of our task
 		// definitions in reverse order, and we want to make sure to overwrite in the right order.
 		rootTaskDefinition, err := getTaskFromPipeline(g.Pipeline, taskID, taskName)
+
 		// If we don't find a taskDefinition from this taskID and name
 		// in the root pipeline we're in trouble.
 		if err != nil {
