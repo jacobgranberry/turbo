@@ -125,10 +125,21 @@ func (g *CompleteGraph) GetPackageTaskVisitor(ctx gocontext.Context, visitor fun
 		// will overwrite the taskDefinition last, and we'll have the right hierarchy
 		// sort.Reverse(taskDefinitions)
 		for _, taskDef := range taskDefinitions {
-			// merge the thing
-			// Need to iterate through all the NON_EMPTY fields in the struct
-			// and assign them to the mergedTaskDefinition
-			// If it's an array or object, we need to _append_.
+			// overwrite booleans
+			mergedTaskDefinition.ShouldCache = taskDef.ShouldCache
+			mergedTaskDefinition.Persistent = taskDef.Persistent
+
+			// overwrite arrays
+			mergedTaskDefinition.EnvVarDependencies = taskDef.EnvVarDependencies
+			mergedTaskDefinition.TopologicalDependencies = taskDef.TopologicalDependencies
+			mergedTaskDefinition.TaskDependencies = taskDef.TaskDependencies
+			mergedTaskDefinition.Outputs = taskDef.Outputs
+			mergedTaskDefinition.Inputs = taskDef.Inputs
+
+			// overwrite stirngs
+			mergedTaskDefinition.OutputMode = taskDef.OutputMode
+
+			// TODO: where are the objects? Are there any inside a TaskDefinition?
 			fmt.Printf("[debug] taskDef %#v\n", taskDef)
 		}
 
